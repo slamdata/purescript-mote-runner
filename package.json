@@ -1,0 +1,7 @@
+{
+  "name": "purescript-mote-runner",
+  "scripts": {
+    "example:build": "pulp build -I example",
+    "example:run": "node example/run.js"
+  }
+}

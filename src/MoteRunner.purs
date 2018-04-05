@@ -2,13 +2,13 @@ module MoteRunner where
 
 import Prelude
 
-import Control.Monad.Aff (Aff, error, throwError)
+import Control.Monad.Aff (Aff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.MonadPlus (guard)
 import Data.Array as Array
 import Data.Either (Either(..))
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), maybe)
 import Data.Traversable (for_)
 import Mote.Monad (MoteT)
 import Mote.Monad as MoteM
@@ -16,30 +16,28 @@ import Mote.Plan (Plan(..), PlanItem, foldPlan)
 import Mote.Plan as Plan
 import MoteRunner.Options (parseConfig)
 import Node.Process (PROCESS)
+import Node.Process as Process
 
-type E e = (process ∷ PROCESS, console ∷ CONSOLE | e)
+type E e = ( process ∷ PROCESS, console ∷ CONSOLE | e )
 
-moteCli ∷ ∀ bracket test a e. MoteT bracket test (Aff (E e)) a → Aff (E e) Unit
-moteCli suite = do
-  liftEff parseConfig >>= case _ of
-    Left err → throwError (error err)
-    Right config
-      | config.list → do
-          tasks ← listTasks config.pattern suite
-          liftEff (for_ tasks log)
-      | otherwise → do
-          pure unit
-
-listTasks
+-- | Accepts a `MoteT` suite of tests, an interpreter and returns a command-line
+-- | application that supports running individual tests, and inspection of the
+-- | test plan.
+moteCli
   ∷ ∀ bracket test a e
-  . Maybe String
-  → MoteT bracket test (Aff e) a
-  → Aff e (Array String)
-listTasks pattern suite = do
-  plan ← MoteM.planT suite
-  pure $ listPlan case pattern of
-    Just p → filterPlan p plan
-    Nothing → plan
+  . (Plan.Plan bracket test → Aff (E e) Unit)
+  → MoteT bracket test (Aff (E e)) a
+  → Aff (E e) Unit
+moteCli interpret suite = do
+  liftEff parseConfig >>= case _ of
+    Left err → liftEff do
+      log err
+      Process.exit 1
+    Right config → do
+      plan ← filterPlanM config.pattern <$> MoteM.planT suite
+      if config.list
+        then liftEff (for_ (listPlan plan) log)
+        else interpret plan
 
 listPlan ∷ ∀ bracket test. Plan bracket test -> Array String
 listPlan = foldPlan
@@ -48,10 +46,13 @@ listPlan = foldPlan
   (\ { label, value } -> map ((label <> "/") <> _) (listPlan value))
   join
 
-filterPlan ∷ ∀ bracket test. String -> Plan bracket test -> Plan bracket test
+filterPlanM ∷ ∀ bracket test. Maybe String → Plan bracket test → Plan bracket test
+filterPlanM = maybe id filterPlan
+
+filterPlan ∷ ∀ bracket test. String → Plan bracket test → Plan bracket test
 filterPlan pattern (Plan items) = Plan (Array.mapMaybe (shouldKeep pattern) items)
 
-unPlan ∷ forall t3 t4. Plan t4 t3 -> Array (PlanItem t4 t3)
+unPlan ∷ ∀ bracket test. Plan bracket test-> Array (PlanItem bracket test)
 unPlan (Plan p) = p
 
 shouldKeep ∷ ∀ bracket test. String → PlanItem bracket test → Maybe (PlanItem bracket test)
