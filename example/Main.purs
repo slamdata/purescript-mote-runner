@@ -8,7 +8,7 @@ import Control.Monad.Trans.Class (lift)
 import Data.String as String
 import Data.Traversable (for_, sequence_)
 import Mote (MoteT, Plan, foldPlan, group, test)
-import MoteRunner (moteCli)
+import MoteRunner (moteTCli)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff as FS
 import Test.QuickCheck (Result, (===))
@@ -53,4 +53,4 @@ interpret =
     sequence_
 
 main ∷ ∀ e. Eff _ Unit
-main = launchAff_ (moteCli (runTestWith Fancy.runTest <<< interpret) suite)
+main = launchAff_ (moteTCli (runTestWith Fancy.runTest <<< interpret) suite)

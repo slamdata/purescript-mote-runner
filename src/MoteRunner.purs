@@ -1,4 +1,4 @@
-module MoteRunner where
+module MoteRunner (moteCli, moteTCli) where
 
 import Prelude
 
@@ -9,11 +9,11 @@ import Data.Array as Array
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..), maybe)
 import Data.Traversable (for_)
-import Mote.Monad (MoteT)
+import Mote.Monad (MoteT, Mote)
 import Mote.Monad as MoteM
 import Mote.Plan (Plan(..), PlanItem, foldPlan)
 import Mote.Plan as Plan
-import MoteRunner.Options (parseConfig)
+import MoteRunner.Options (Config, parseConfig)
 import Node.Process (PROCESS)
 import Node.Process as Process
 
@@ -21,21 +21,43 @@ import Node.Process as Process
 -- | application that supports running individual tests, and inspection of the
 -- | test plan.
 moteCli
+  ∷ ∀ void void' test bracket m e
+  . MonadEff (process ∷ PROCESS, console ∷ CONSOLE | e) m
+  ⇒ (Plan bracket test → m void)
+  → Mote bracket test void'
+  → m Unit
+moteCli interpret suite = do
+  config ← getConfig
+  let plan = filterPlanM config.pattern (MoteM.plan suite)
+  if config.list
+    then liftEff (for_ (listPlan plan) log)
+    else void (interpret plan)
+
+-- | Like moteCli, but supports effectful construction of the test plan in MonadEff.
+moteTCli
   ∷ ∀ bracket test void void' e m
   . MonadEff (process ∷ PROCESS, console ∷ CONSOLE | e) m
   ⇒ (Plan.Plan bracket test → m void')
   → MoteT bracket test m void
   → m Unit
-moteCli interpret suite = do
+moteTCli interpret suite = do
+  config ← getConfig
+  plan ← filterPlanM config.pattern <$> MoteM.planT suite
+  if config.list
+    then liftEff (for_ (listPlan plan) log)
+    else void (interpret plan)
+
+getConfig
+  ∷ ∀ m e
+  . MonadEff (process ∷ PROCESS, console ∷ CONSOLE | e) m
+  ⇒ m Config
+getConfig = do
   liftEff parseConfig >>= case _ of
     Left err → liftEff do
       log err
       Process.exit 1
-    Right config → do
-      plan ← filterPlanM config.pattern <$> MoteM.planT suite
-      if config.list
-        then liftEff (for_ (listPlan plan) log)
-        else void (interpret plan)
+    Right config →
+      pure config
 
 listPlan ∷ ∀ bracket test. Plan bracket test -> Array String
 listPlan = foldPlan
