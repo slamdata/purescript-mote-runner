@@ -52,7 +52,7 @@ filterPlanM = maybe id filterPlan
 filterPlan ∷ ∀ bracket test. String → Plan bracket test → Plan bracket test
 filterPlan pattern (Plan items) = Plan (Array.mapMaybe (shouldKeep pattern) items)
 
-unPlan ∷ ∀ bracket test. Plan bracket test-> Array (PlanItem bracket test)
+unPlan ∷ ∀ bracket test. Plan bracket test → Array (PlanItem bracket test)
 unPlan (Plan p) = p
 
 shouldKeep ∷ ∀ bracket test. String → PlanItem bracket test → Maybe (PlanItem bracket test)
