@@ -24,9 +24,9 @@ type E e = ( process ∷ PROCESS, console ∷ CONSOLE | e )
 -- | application that supports running individual tests, and inspection of the
 -- | test plan.
 moteCli
-  ∷ ∀ bracket test a e
+  ∷ ∀ bracket test void e
   . (Plan.Plan bracket test → Aff (E e) Unit)
-  → MoteT bracket test (Aff (E e)) a
+  → MoteT bracket test (Aff (E e)) void
   → Aff (E e) Unit
 moteCli interpret suite = do
   liftEff parseConfig >>= case _ of
@@ -55,7 +55,11 @@ filterPlan pattern (Plan items) = Plan (Array.mapMaybe (shouldKeep pattern) item
 unPlan ∷ ∀ bracket test. Plan bracket test → Array (PlanItem bracket test)
 unPlan (Plan p) = p
 
-shouldKeep ∷ ∀ bracket test. String → PlanItem bracket test → Maybe (PlanItem bracket test)
+shouldKeep
+  ∷ ∀ bracket test
+  . String
+  → PlanItem bracket test
+  → Maybe (PlanItem bracket test)
 shouldKeep pattern = case _ of
   t@(Plan.Test { label }) → guard (label == pattern) $> t
   Plan.Skip label → guard (label == pattern) $> Plan.Skip label
@@ -66,6 +70,5 @@ shouldKeep pattern = case _ of
         let
           filtered = Array.mapMaybe (shouldKeep pattern) (unPlan value)
         in
-          if Array.null filtered
-            then Nothing
-            else Just (Plan.Group { label, bracket, value: Plan filtered })
+          guard (Array.null filtered) $>
+            (Plan.Group { label, bracket, value: Plan filtered })
