@@ -2,8 +2,7 @@ module MoteRunner where
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
-import Control.Monad.Eff.Class (liftEff)
+import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.MonadPlus (guard)
 import Data.Array as Array
@@ -18,16 +17,15 @@ import MoteRunner.Options (parseConfig)
 import Node.Process (PROCESS)
 import Node.Process as Process
 
-type E e = ( process ∷ PROCESS, console ∷ CONSOLE | e )
-
 -- | Accepts a `MoteT` suite of tests, an interpreter and returns a command-line
 -- | application that supports running individual tests, and inspection of the
 -- | test plan.
 moteCli
-  ∷ ∀ bracket test void e
-  . (Plan.Plan bracket test → Aff (E e) Unit)
-  → MoteT bracket test (Aff (E e)) void
-  → Aff (E e) Unit
+  ∷ ∀ bracket test void void' e m
+  . MonadEff (process ∷ PROCESS, console ∷ CONSOLE | e) m
+  ⇒ (Plan.Plan bracket test → m void')
+  → MoteT bracket test m void
+  → m Unit
 moteCli interpret suite = do
   liftEff parseConfig >>= case _ of
     Left err → liftEff do
@@ -37,7 +35,7 @@ moteCli interpret suite = do
       plan ← filterPlanM config.pattern <$> MoteM.planT suite
       if config.list
         then liftEff (for_ (listPlan plan) log)
-        else interpret plan
+        else void (interpret plan)
 
 listPlan ∷ ∀ bracket test. Plan bracket test -> Array String
 listPlan = foldPlan

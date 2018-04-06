@@ -15,8 +15,7 @@
     "purescript-validation": "^3.2.0",
     "purescript-node-process": "^5.0.0",
     "purescript-eff": "^3.2.0",
-    "purescript-record": "^0.2.6",
-    "purescript-aff": "^4.0.2"
+    "purescript-record": "^0.2.6"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0",
