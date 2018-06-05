@@ -8,18 +8,17 @@
     "example"
   ],
   "dependencies": {
-    "purescript-prelude": "#compiler/0.12",
-    "purescript-console": "#compiler/0.12",
-    "purescript-optlicative": "cryogenian/purescript-optlicative#compiler/0.12",
-    "purescript-mote": "cryogenian/purescript-mote#compiler/0.12",
-    "purescript-validation": "#compiler/0.12",
-    "purescript-node-process": "#compiler/0.12",
-    "purescript-effect": "#compiler/0.12",
-    "purescript-record": "#compiler/0.12"
+    "purescript-prelude": "^4.0.0",
+    "purescript-console": "^4.1.0",
+    "purescript-optlicative": "^5.0.0",
+    "purescript-validation": "^4.0.0",
+    "purescript-node-process": "^6.0.0",
+    "purescript-record": "^1.0.0",
+    "purescript-mote": "cryogenian/purescript-mote#compiler/0.12"
   },
   "devDependencies": {
-    "purescript-psci-support": "#compiler/0.12",
-    "purescript-test-unit": "justinwoo/purescript-test-unit#compiler/0.12",
-    "purescript-node-fs-aff": "#compiler/0.12"
+    "purescript-psci-support": "^4.0.0",
+    "purescript-test-unit": "^14.0.0",
+    "purescript-node-fs-aff": "^6.0.0"
   }
 }

@@ -5,7 +5,7 @@
     "example:run": "node example/run.js"
   },
   "dependencies": {
-    "pulp": "^12.0.1",
-    "purescript": "cryogenian/node-purescript-bin#master"
+    "pulp": "^12.2.0",
+    "purescript": "slamdata/node-purescript#0.12"
   }
 }
