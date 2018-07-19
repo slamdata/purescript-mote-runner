@@ -2,8 +2,8 @@ module Main where
 
 import Prelude
 
-import Control.Monad.Aff (Aff, launchAff_)
-import Control.Monad.Eff (Eff)
+import Effect.Aff (Aff, launchAff_)
+import Effect (Effect)
 import Control.Monad.Trans.Class (lift)
 import Data.String as String
 import Data.Traversable (for_, sequence_)
@@ -21,9 +21,7 @@ import Test.Unit.Output.Fancy as Fancy
 theCommutativeProperty ∷ Int → Int → Result
 theCommutativeProperty a b = (a + b) === (b + a)
 
-suite
-  ∷ ∀ bracket eff eff1
-  . MoteT bracket (Test eff) (Aff (fs ∷ FS.FS | eff1)) Unit
+suite ∷ ∀ bracket. MoteT bracket Test Aff Unit
 suite = do
   test "basic asserts" do
     Assert.assert "wasn't true" true
@@ -41,10 +39,7 @@ suite = do
       TU.failure "This one fails"
 
 -- | interpret runs a `Plan` to produce a `TestSuite`
-interpret
-  ∷ ∀ bracket eff
-  . Plan bracket (Test eff)
-  → TestSuite eff
+interpret ∷ ∀ bracket. Plan bracket Test → TestSuite
 interpret =
   foldPlan
     (\ { label, value } -> TU.test label value)
@@ -52,5 +47,5 @@ interpret =
     (\ { label, value } -> TU.suite label (interpret value))
     sequence_
 
-main ∷ ∀ e. Eff _ Unit
+main ∷ Effect Unit
 main = launchAff_ (moteTCli (runTestWith Fancy.runTest <<< interpret) suite)

@@ -8,18 +8,17 @@
     "example"
   ],
   "dependencies": {
-    "purescript-prelude": "^3.1.1",
-    "purescript-console": "^3.0.0",
-    "purescript-optlicative": "https://github.com/Thimoteus/purescript-optlicative.git#^4.0.2",
-    "purescript-mote": "^0.1.0",
-    "purescript-validation": "^3.2.0",
-    "purescript-node-process": "^5.0.0",
-    "purescript-eff": "^3.2.0",
-    "purescript-record": "^0.2.6"
+    "purescript-prelude": "^4.0.0",
+    "purescript-console": "^4.1.0",
+    "purescript-optlicative": "^5.0.0",
+    "purescript-validation": "^4.0.0",
+    "purescript-node-process": "^6.0.0",
+    "purescript-record": "^1.0.0",
+    "purescript-mote": "cryogenian/purescript-mote#compiler/0.12"
   },
   "devDependencies": {
-    "purescript-psci-support": "^3.0.0",
-    "purescript-test-unit": "^13.0.0",
-    "purescript-node-fs-aff": "^5.0.0"
+    "purescript-psci-support": "^4.0.0",
+    "purescript-test-unit": "^14.0.0",
+    "purescript-node-fs-aff": "^6.0.0"
   }
 }
