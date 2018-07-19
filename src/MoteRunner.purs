@@ -98,5 +98,5 @@ shouldKeep pattern = case _ of
         let
           filtered = Array.mapMaybe (shouldKeep pattern) (unPlan value)
         in
-          guard (Array.null filtered) $>
+          guard (not Array.null filtered) $>
             (Plan.Group { label, bracket, value: Plan filtered })
