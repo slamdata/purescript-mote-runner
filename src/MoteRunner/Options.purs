@@ -15,7 +15,7 @@ type Config =
 
 parseConfig ∷ Effect (Either String Config)
 parseConfig = do
-  { value } ← optlicate {} (defaultPreferences { globalOpts = parseConfig' })
+  { value } ← optlicate {} (defaultPreferences { globalOpts = parseConfig', errorOnUnrecognizedOpts = false })
   pure $ unV (Left <<< renderErrors) Right value
 
 parseConfig' :: Optlicative Config
