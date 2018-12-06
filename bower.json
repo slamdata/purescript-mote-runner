@@ -14,7 +14,7 @@
     "purescript-validation": "^4.0.0",
     "purescript-node-process": "^6.0.0",
     "purescript-record": "^1.0.0",
-    "purescript-mote": "cryogenian/purescript-mote#compiler/0.12"
+    "purescript-mote": "^1.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^4.0.0",
