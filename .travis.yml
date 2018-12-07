@@ -8,4 +8,5 @@ install:
 script:
   - bower install --production
   - npm run -s build
+  - bower install
   - npm run -s example:build
