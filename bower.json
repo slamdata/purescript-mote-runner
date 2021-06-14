@@ -1,24 +1,30 @@
 {
   "name": "purescript-mote-runner",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slamdata/purescript-mote-runner.git"
+  },
   "ignore": [
     "**/.*",
-    "node_modules",
     "bower_components",
+    "node_modules",
     "output",
-    "example"
+    "test",
+    "bower.json",
+    "package.json"
   ],
   "dependencies": {
-    "purescript-prelude": "^4.0.0",
-    "purescript-console": "^4.1.0",
-    "purescript-optlicative": "^6.0.0",
-    "purescript-validation": "^4.0.0",
-    "purescript-node-process": "^7.0.0",
-    "purescript-record": "^2.0.0",
-    "purescript-mote": "^1.0.0"
+    "purescript-prelude": "^5.0.1",
+    "purescript-console": "^5.0.0",
+    "purescript-optlicative": "garyb/purescript-optlicative#6eb14679770828bc7df68daf54c814e3805e64fa",
+    "purescript-validation": "^5.0.0",
+    "purescript-node-process": "^8.2.0",
+    "purescript-record": "^3.0.0",
+    "purescript-mote": "^2.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^4.0.0",
-    "purescript-test-unit": "^15.0.0",
-    "purescript-node-fs-aff": "^6.0.0"
+    "purescript-psci-support": "^5.0.0",
+    "purescript-test-unit": "^16.0.0",
+    "purescript-node-fs-aff": "^7.0.0"
   }
 }

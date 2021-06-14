@@ -5,7 +5,7 @@ import Prelude
 import Effect (Effect)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
-import Data.Validation.Semigroup (unV)
+import Data.Validation.Semigroup (validation)
 import Node.Optlicative (Optlicative, defaultPreferences, flag, optional, optlicate, renderErrors, string)
 
 type Config =
@@ -16,7 +16,7 @@ type Config =
 parseConfig ∷ Effect (Either String Config)
 parseConfig = do
   { value } ← optlicate {} (defaultPreferences { globalOpts = parseConfig', errorOnUnrecognizedOpts = false })
-  pure $ unV (Left <<< renderErrors) Right value
+  pure $ validation (Left <<< renderErrors) Right value
 
 parseConfig' :: Optlicative Config
 parseConfig' = {pattern: _, list: _}
