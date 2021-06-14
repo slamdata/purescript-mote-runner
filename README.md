@@ -1,7 +1,7 @@
 # purescript-mote-runner
 
-[![Latest release](http://img.shields.io/github/release/kRITZCREEK/purescript-mote-runner.svg)](https://github.com/kRITZCREEK/purescript-mote-runner/releases)
-[![Build status](https://travis-ci.org/kRITZCREEK/purescript-mote-runner.svg?branch=master)](https://travis-ci.org/kRITZCREEK/purescript-mote-runner)
+[![Latest release](http://img.shields.io/github/release/slamdata/purescript-mote-runner.svg)](https://github.com/slamdata/purescript-mote-runner/releases)
+![Build Status](https://github.com/slamdata/purescript-mote-runner/actions/workflows/ci.yml/badge.svg)
 
 Creates a CLI wrapper for test suites written with the `purescript-mote` DSL,
 that allows to selectively run tests.
